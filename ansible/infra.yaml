@@ -1,0 +1,23 @@
+---
+#####################
+# Install Python
+#####################
+
+- hosts: all
+  gather_facts: false # As Python is not yet installed, we cannot gather host facts
+
+  tasks:
+    - name: Install Python
+      raw: "yum -y install python27"
+      become: true
+      retries: 10
+      delay: 20
+      # If you run this playbook immediately after Terraform, ssh may not be ready to respond yet
+
+#######################
+# Setup K8s components
+#######################
+
+- hosts: jumphost
+  roles:
+    - jumphost
