@@ -1,7 +1,15 @@
 # Source IP
 
 variable control_cidr {
-  default = ["88.208.76.87/32", "193.29.76.161/32"]
+  default = ["88.208.76.87/32",
+              "193.29.76.160/32",
+              "193.29.76.161/32",
+              "193.29.76.162/32",
+              "193.29.76.163/32",
+              "193.29.76.164/32",
+              "193.29.76.165/32",
+              "193.29.76.166/32",
+              "193.29.76.167/32"]
 }
 
 # Key
@@ -49,7 +57,7 @@ variable vpc_name {
 }
 
 variable vpc_cidr {
-  default = "172.34.0.0/24"
+  default = "172.35.0.0/24"
 }
 
 # Instances Setup
@@ -62,5 +70,5 @@ variable default_instance_user {
 }
 
 variable jump_host_type {
-  default = "t2.micro"
+  default = "t2.nano"
 }

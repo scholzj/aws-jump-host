@@ -107,53 +107,7 @@ resource "aws_route_table_association" "schojak" {
 
 resource "aws_security_group" "schojak" {
   vpc_id = "${aws_vpc.schojak.id}"
-  name = "schojak"
-
-  # Allow all outbound
-  egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  # Allow all internal
-  ingress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["${var.vpc_cidr}"]
-  }
-
-  # Allow ICMP from control host IP
-  ingress {
-    from_port = 8
-    to_port = 0
-    protocol = "icmp"
-    cidr_blocks = ["${var.control_cidr[0]}"]
-  }
-
-  ingress {
-    from_port = 8
-    to_port = 0
-    protocol = "icmp"
-    cidr_blocks = ["${var.control_cidr[1]}"]
-  }
-
-  # Allow all traffic from control host IP
-  ingress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["${var.control_cidr[0]}"]
-  }
-
-  ingress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["${var.control_cidr[1]}"]
-  }
+  name = "${var.vpc_name}-sg"
 
   tags {
       Name = "schojak"
@@ -162,4 +116,32 @@ resource "aws_security_group" "schojak" {
       Confidentiality = "${var.confidentality}"
       Costcenter = "${var.costcenter}"
   }
+}
+
+resource "aws_security_group_rule" "allow_all_outbound_from_jumpnet" {
+    type = "egress"
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+    security_group_id = "${aws_security_group.schojak.id}"
+}
+
+resource "aws_security_group_rule" "allow_all_from_control_host" {
+    count = "${length(var.control_cidr)}"
+    type = "ingress"
+    from_port = 22
+    to_port = 22
+    protocol = "tcp"
+    cidr_blocks = ["${var.control_cidr[count.index]}"]
+    security_group_id = "${aws_security_group.schojak.id}"
+}
+
+resource "aws_security_group_rule" "allow_all_from_public_subnect_to_jumpnet" {
+    type = "ingress"
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["${var.vpc_cidr}"]
+    security_group_id = "${aws_security_group.schojak.id}"
 }

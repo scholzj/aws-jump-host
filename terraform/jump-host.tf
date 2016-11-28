@@ -8,8 +8,9 @@ resource "aws_instance" "jump" {
     instance_type = "${var.jump_host_type}"
 
     subnet_id = "${aws_subnet.schojak.id}"
-    #private_ip = "${cidrhost(var.vpc_cidr, 10)}"
     associate_public_ip_address = true # Instances have public, dynamic IP
+
+    iam_instance_profile = "${aws_iam_instance_profile.jumphost_profile.id}"
 
     availability_zone = "${var.zone}"
     vpc_security_group_ids = ["${aws_security_group.schojak.id}"]
