@@ -24,7 +24,7 @@ EOF
 
 # Role policy
 resource "aws_iam_role_policy" "jumphost_policy" {
-  name = "${var.vpc_name}-controller"
+  name = "${var.vpc_name}-jumphost"
   role = "${aws_iam_role.jumphost_iam.id}"
   policy = <<EOF
 {
@@ -45,6 +45,10 @@ resource "aws_iam_role_policy" "jumphost_policy" {
   ]
 }
 EOF
+
+  depends_on = [
+    "aws_s3_bucket.jumphost-bootstrap"
+  ]
 }
 
 # IAM Instance Profile for Controller

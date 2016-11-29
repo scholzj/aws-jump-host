@@ -21,6 +21,10 @@ resource "aws_s3_bucket" "jumphost-bootstrap" {
 }
 
 resource "aws_s3_bucket_object" "bootstrap-package" {
+    depends_on = [
+        "aws_s3_bucket.jumphost-bootstrap"
+    ]
+
     bucket = "${var.vpc_name}-jumphost-bootstrap"
     key = "bootstrap.zip"
     source = "${path.module}/../bootstrap.zip"
